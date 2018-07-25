@@ -43,8 +43,8 @@ build-linux-backend:
 .PHONY: build-linux-backend
 
 deploy:
-	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-	docker build -f Dockerfile -t $DOCKER_USERNAME/coding-challenge-backend:$TAG .
-	docker push $DOCKER_USERNAME/coding-challenge-backend:$VERSION
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	docker build -f Dockerfile -t $(DOCKER_USERNAME)/coding-challenge-backend:$(VERSION) .
+	docker push $(DOCKER_USERNAME)/coding-challenge-backend:$(VERSION)
 	docker logout
 .PHONY: deploy
