@@ -1,8 +1,11 @@
 # coding-challenge
 
+## Build
 [![codecov](https://codecov.io/gh/RafalKorepta/coding-challenge/branch/master/graph/badge.svg)](https://codecov.io/gh/RafalKorepta/coding-challenge)
 [![Build Status](https://travis-ci.org/RafalKorepta/coding-challenge.svg?branch=master)](https://travis-ci.org/RafalKorepta/coding-challenge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/RafalKorepta/coding-challenge)](https://goreportcard.com/report/github.com/RafalKorepta/coding-challenge)
+
+## Docker image
 [![](https://images.microbadger.com/badges/image/rafalkorepta/coding-challenge-backend:v0.0.1-3-gedbcbe4.svg)](https://microbadger.com/images/rafalkorepta/coding-challenge-backend:v0.0.1-3-gedbcbe4 "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/rafalkorepta/coding-challenge-backend:v0.0.1-3-gedbcbe4.svg)](https://microbadger.com/images/rafalkorepta/coding-challenge-backend:v0.0.1-3-gedbcbe4 "Get your own version badge on microbadger.com")
 

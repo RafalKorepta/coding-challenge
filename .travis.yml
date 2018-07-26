@@ -18,4 +18,4 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
   - env
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - if [ -n $TRAVIS_TAG ] && [ "$TRAVIS_BRANCH" == "master" ]; then make deploy; fi
+  - if [ -n "$TRAVIS_TAG" ]; then make deploy; fi
