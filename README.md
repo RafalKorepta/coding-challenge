@@ -38,16 +38,41 @@ If you don't have kubernetes just visit http://apwdokowdkpaokdp.com
 ### Prerequisite
 For setup golang development environment visit https://golang.org/doc/code.html.
 When you finish the setup then run `make init` to download tools that are used for testing and building purpose.
+If you want to recompile protobuf contract please follow this instruction 
+[https://github.com/grpc-ecosystem/grpc-gateway#installation](https://github.com/grpc-ecosystem/grpc-gateway#installation)
 
 ### Build
 To build the backend application run `make backend`. It will create in `dist` folder binary named `portal` 
 that can be run in your computer architecture.
+
+### Generate Protobuf contract
+In the `pkg/api/email/v1alpha1` folder you can find `email.proto` from which the Makefile build gRPC service, 
+gRPC gateway and swagger definition. If you want to change contract, then run `make` inside 
+`pkg/api/email/v1alpha1` path.
+
+### Swagger-ui
+The swagger-ui was copied from [https://github.com/philips/grpc-gateway-example](https://github.com/philips/grpc-gateway-example).
+If you want to generate the ui again, then run `hack/build-ui.sh` from root folder of this repo. The swagger-ui
+will be available on [https://email-backend-service.com/swagger-ui](https://email-backend-service.com/swagger-ui).
+
+### Certificates
+In the `pkg/certs/local_certs` folder you can find generated certificates that should be not used in production. 
+If you would like to generated new certificates please go the the `certs` folder and run `make` command.
+For demo purpose and testing the `local_certs` will be used to secure service.
+
+### Configuration
+All the configuration can be found in `docs` folder. It can be provided via config file 
+(default `.portal-backend`) or via programs flags or via environment variables 
+(the same name as flags but with prefix `SMACC` and all upper case).
 
 ### Testing
 For writing unit test please use ginkgo as a framework for writing behavioral tests.
 
 ### Create containers
 To create the backend containers locally run `make build-container-locally`
+
+### Docs
+If you want to generate command line markdown documentation go to `cmd` folder and run `go generate .`.
 
 ### CI
 This project uses Travis-CI as a continuous integration backend. It will do the following tasks:

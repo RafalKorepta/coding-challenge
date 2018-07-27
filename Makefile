@@ -3,6 +3,11 @@ VERSION = $(shell git describe --tags --always --dirty --match=*.*.*)
 GO_PKGS= \
     github.com/RafalKorepta/coding-challenge
 
+define linker_flags
+-X github.com/RafalKorepta/coding-challenge/cmd.Version=$(VERSION) \
+-X github.com/RafalKorepta/coding-challenge/cmd.Commit=$(GIT_HASH)
+endef
+
 all: backend
 .PHONY: all
 
@@ -13,9 +18,11 @@ init:
 	go get -u github.com/axw/gocov/...
 	go get -u github.com/AlekSi/gocov-xml
 	go get -u github.com/onsi/ginkgo/ginkgo
+	go get -u github.com/golang/protobuf/protoc-gen-go
+	go get github.com/jteeuwen/go-bindata/...
 .PHONY: init
 
-backend: lint test-backend build-linux-backend
+backend: lint test-backend build-backend
 .PHONY: backend
 
 lint:
@@ -38,8 +45,12 @@ build-container:
 	docker build -t rafalkorepta/coding-challenge-backend:local-latest .
 .PHONY: build-container-locally
 
+build-backend:
+	go build -ldflags '$(linker_flags) -s' -o dist/portal-backend main.go
+.PHONY: build-backend
+
 build-linux-backend:
-	env GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$(VERSION) -X main.Commit=$(GIT_HASH)" -o dist/portal-backend main.go
+	env GOOS=linux GOARCH=amd64 go build -ldflags '$(linker_flags) -s' -o dist/portal-backend main.go
 .PHONY: build-linux-backend
 
 deploy:
