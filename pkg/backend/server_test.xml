@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="coding-challenge server unit test" tests="3" failures="0" errors="0" time="0">
+      <testcase name="Server that register REST and gRPC endpoint on the same port secure server Http1.1 when swagger-ui URI is called should response with moved permanently response" classname="coding-challenge server unit test" time="0.010930607"></testcase>
+      <testcase name="Server that register REST and gRPC endpoint on the same port secure server Http1.1 when swagger.json URI is correct should return swagger-ui webpage" classname="coding-challenge server unit test" time="0.00437551"></testcase>
+      <testcase name="Server that register REST and gRPC endpoint on the same port secure server Http1.1 Should return swagger.json" classname="coding-challenge server unit test" time="0.000906699"></testcase>
+  </testsuite>

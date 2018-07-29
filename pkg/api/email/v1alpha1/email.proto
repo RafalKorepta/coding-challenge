@@ -25,7 +25,7 @@ import "google/api/annotations.proto";
 
 // Email Service allow to send mails through external provider
 //
-// The request are lowbalanced betweend 2 external SMTP service provider
+// The request are lowbalanced betweend 2 external SMTP services provider
 service EmailService {
     // SendMail
     rpc SendMail (EmailRequest) returns (EmailResponse) {

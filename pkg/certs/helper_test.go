@@ -19,10 +19,19 @@ import (
 
 	"os"
 
+	"fmt"
+	"io"
+
 	"github.com/stretchr/testify/assert"
 )
 
 const testData = "local_certs"
+
+type MockReader struct {
+	io.Reader
+}
+
+func (MockReader) Read(p []byte) (n int, err error) { return 0, fmt.Errorf("test error") }
 
 func Test_CreateX509Pool(t *testing.T) {
 	// Arrange
@@ -38,7 +47,7 @@ func Test_CreateX509Pool(t *testing.T) {
 		assert.NotNil(t, certPool, "certPool must exist")
 	})
 
-	t.Run("Call with nil", func(t *testing.T) {
+	t.Run("The cert argument is nil", func(t *testing.T) {
 		// Act
 		certPool, err := CreateX509Pool(nil)
 
@@ -47,7 +56,7 @@ func Test_CreateX509Pool(t *testing.T) {
 		assert.Nil(t, certPool, "certPool must not exist")
 	})
 
-	t.Run("Call with empty file descriptor that cause PANIC", func(t *testing.T) {
+	t.Run("The cert argument is empty file descriptor that cause PANIC", func(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
@@ -62,7 +71,19 @@ func Test_CreateX509Pool(t *testing.T) {
 		assert.Nil(t, certPool, "certPool must not exist")
 	})
 
-	t.Run("Call with empty file", func(t *testing.T) {
+	t.Run("The cert argument is io.Read which has Read implement to return an error", func(t *testing.T) {
+		// Arrange
+		mock := MockReader{}
+
+		// Act
+		certPool, err := CreateX509Pool(mock)
+
+		// Assert
+		assert.Error(t, err, "Error must occur")
+		assert.Nil(t, certPool, "certPool must not exist")
+	})
+
+	t.Run("The cert argument is file descriptor which points to empty file", func(t *testing.T) {
 		// Act
 		certPool, err := CreateX509Pool(emptyFile)
 

@@ -1,7 +1,8 @@
 GIT_HASH = $(shell git rev-parse HEAD | tr -d "\n")
 VERSION = $(shell git describe --tags --always --dirty --match=*.*.*)
 GO_PKGS= \
-    github.com/RafalKorepta/coding-challenge
+    github.com/RafalKorepta/coding-challenge \
+    github.com/RafalKorepta/coding-challenge/pkg/...
 
 define linker_flags
 -X github.com/RafalKorepta/coding-challenge/cmd.Version=$(VERSION) \
