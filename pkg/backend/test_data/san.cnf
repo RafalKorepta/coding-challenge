@@ -1,0 +1,19 @@
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+x509_extensions    = v3_req
+prompt             = no
+[ req_distinguished_name ]
+countryName                = PL
+stateOrProvinceName        = Mazovian
+localityName               = Warsaw
+organizationName           = SMACC
+organizationalUnitName     = Development
+CN                         = localhost
+[v3_req]
+subjectAltName      = IP:127.0.0.1
+subjectAltName      = @alternate_names
+[alternate_names]
+DNS.1     = 127.0.0.1
+DNS.2     = localhost
+IP.1      = 127.0.0.1
