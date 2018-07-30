@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	debugFlag      = "debug"
+	DebugFlag      = "debug"
 	configPathFlag = "cfg_path"
 	configFlag     = "config"
 )
@@ -43,10 +43,6 @@ var (
 	// and https://golang.org/cmd/link/ in section Flags `-X importpath.name=value`.
 	Commit string
 )
-
-var logger *zap.Logger
-var sugar *zap.SugaredLogger
-var a, b *string
 
 //RootCmd is the root of all cobra command in this project
 var RootCmd = &cobra.Command{
@@ -70,14 +66,14 @@ Or over HTTP 1.1 with curl:
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		logger.Fatal("Failed to execute root command", zap.Error(err))
+		zap.L().Fatal("Failed to execute root command", zap.Error(err))
 	}
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	newLogger, err := zap.NewProduction(zap.AddStacktrace(zap.ErrorLevel),
+	//First initialize logger
+	newLogger, err := zap.NewProduction(
+		zap.AddStacktrace(zap.ErrorLevel),
 		zap.Fields(
 			zap.Field{
 				Key:    "commit",
@@ -90,20 +86,18 @@ func init() {
 				String: Version,
 			},
 		))
-
 	if err != nil {
-		log.Printf("Unable to create logger. Error: %v", err)
-	} else {
-		logger = newLogger
-		sugar = logger.Sugar()
-		zap.ReplaceGlobals(logger)
+		log.Fatalf("Unable to create logger. Error: %v", err)
 	}
+	zap.ReplaceGlobals(newLogger)
 
-	RootCmd.PersistentFlags().BoolP(debugFlag, "d", false, "turn on debug logging")
-	a = RootCmd.PersistentFlags().String(configPathFlag, ".", "Relative path where config resides")
-	b = RootCmd.PersistentFlags().String(configFlag, ".portal-backend", "config file (default is $HOME/.portal-backend.yaml)")
-	if err = viper.BindPFlags(RootCmd.PersistentFlags()); err != nil {
-		logger.Error("Can not bind persistent flags")
+	cobra.OnInitialize(initConfig)
+
+	RootCmd.PersistentFlags().BoolP(DebugFlag, "d", false, "turn on debug logging")
+	RootCmd.PersistentFlags().String(configPathFlag, ".", "Relative path where config resides")
+	RootCmd.PersistentFlags().String(configFlag, ".portal-backend", "config file (default is $HOME/.portal-backend.yaml)")
+	if err := viper.BindPFlags(RootCmd.PersistentFlags()); err != nil {
+		zap.L().Error("Can not bind persistent flags")
 	}
 }
 
@@ -115,38 +109,32 @@ func initConfig() {
 	viper.SetEnvPrefix("SMACC")
 	viper.AutomaticEnv()
 
+	// Update global logger if debug flag is chosen
+	cfg := zap.NewProductionConfig()
 	if viper.GetBool("debug") {
-		err := logger.Sync() // flushes buffer, if any
-		if err != nil {
-			log.Printf("Unable to sync logger. Error %v", err)
-		}
-
-		newLogger, err := zap.NewProduction(zap.AddStacktrace(zap.ErrorLevel),
-			zap.Fields(
-				zap.Field{
-					Key:    "commit",
-					Type:   zapcore.StringType,
-					String: Commit,
-				},
-				zap.Field{
-					Key:    "version",
-					Type:   zapcore.StringType,
-					String: Version,
-				},
-			))
-
-		if err != nil {
-			log.Fatalf("Unable to create logger. Error: %v", err)
-		} else {
-			logger = newLogger
-			sugar = logger.Sugar()
-			zap.ReplaceGlobals(logger)
-		}
+		cfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	}
+	newLogger, err := cfg.Build(zap.AddStacktrace(zap.ErrorLevel),
+		zap.Fields(
+			zap.Field{
+				Key:    "commit",
+				Type:   zapcore.StringType,
+				String: Commit,
+			},
+			zap.Field{
+				Key:    "version",
+				Type:   zapcore.StringType,
+				String: Version,
+			},
+		))
+	if err != nil {
+		log.Fatalf("Unable to create logger. Error: %v", err)
+	}
+	zap.ReplaceGlobals(newLogger)
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		sugar.Errorw("Failed to read from config file",
+		zap.S().Errorw("Failed to read from config file",
 			"configFile", viper.ConfigFileUsed(),
 			"error", err)
 	}

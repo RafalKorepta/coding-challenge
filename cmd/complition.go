@@ -17,6 +17,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 // completionCmd represents the completion command
@@ -35,7 +36,7 @@ To configure your zsh shell to load completions for each session add to your bas
 	Run: func(cmd *cobra.Command, args []string) {
 		err := RootCmd.GenZshCompletion(os.Stdout)
 		if err != nil {
-			logger.Error("unable to generate bash completion")
+			zap.L().Error("unable to generate bash completion")
 		}
 	},
 }

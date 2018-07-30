@@ -27,13 +27,13 @@ func CreateX509Pool(cert io.Reader) (*x509.CertPool, error) {
 
 	b, err := ioutil.ReadAll(cert)
 	if err != nil {
-		return nil, fmt.Errorf("can not read the certificate") // TODO zap has logging and returning error?
+		return nil, fmt.Errorf("can not read the certificate")
 	}
 
 	demoCertPool := x509.NewCertPool()
 	ok := demoCertPool.AppendCertsFromPEM(b)
 	if !ok {
-		return nil, fmt.Errorf("could not append certificate") // TODO zap has logging and returning error?
+		return nil, fmt.Errorf("could not append certificate")
 	}
 	return demoCertPool, nil
 }

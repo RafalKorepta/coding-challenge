@@ -15,3 +15,4 @@ sendgrid-api-key.env
 full-lint-report.xml
 .idea
 dist
+server-test.xml
